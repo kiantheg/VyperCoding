@@ -7,6 +7,7 @@ creator: public(address)
 @external
 def __init__ (creator: address):
     self.creator = creator
+
 @external
 def setOdds (oneInThisMany: uint256):
     assert block.coinbase == self.creator
@@ -25,18 +26,18 @@ def lose (player: address):
         self.players.pop()
     self.losers.append(player)
 
-@external
+@internal
 def random() -> (uint256):
     return block.number % self.odds
 
 @external 
 def play():
     randNum: uint256 = self.random()
-    currPlayer: address = self.players[playersTurn]
+    currPlayer: address = self.players[self.playersTurn]
     if randNum == 1:
-        lose(currPlayer)
+        self.lose(currPlayer)
     else:
-        playersTurn = playersTurn + 1
+        self.playersTurn = self.playersTurn + 1
 
 @external
 def isALoser(person: address) -> (bool):
